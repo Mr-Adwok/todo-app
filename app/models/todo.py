@@ -11,6 +11,7 @@ class Todo(SQLModel,table = True):
         sa_column=Column(pg.UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False)
     )
     title:str
+    description:str
     completed:bool
     created_at:datetime = Field(default_factory=datetime.now)
 
