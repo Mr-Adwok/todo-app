@@ -1,8 +1,14 @@
 from pydantic import BaseModel
+import uuid
+# from datetime import datetime,date
 
 
 
 
-class Create_Todo(BaseModel):
-    ...
+
+class CreateTodo(BaseModel):
+    title:str
+    description:str
+
+
 
