@@ -12,7 +12,7 @@ class Todo(SQLModel,table = True):
     )
     title:str
     description:str
-    completed:bool
+    completed:bool = False
     created_at:datetime = Field(default_factory=datetime.now)
 
     def __repr__(self):
@@ -21,3 +21,4 @@ class Todo(SQLModel,table = True):
     class Config:
         orm_mode = True
 
+print(SQLModel.metadata.tables.keys())

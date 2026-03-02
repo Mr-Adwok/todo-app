@@ -1,7 +1,6 @@
 from starlette.routing import Route
 from contextlib import asynccontextmanager
 from starlette.applications import Starlette
-from .db.session import init_db
 from starlette.responses import PlainTextResponse
 
 
