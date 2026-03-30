@@ -3,27 +3,64 @@ from starlette.requests import Request
 from app.services.all_services import TodoService
 from starlette.responses import JSONResponse
 from app.schemas.schema import  CreateTodo
+import traceback
 
 # service class
 todo_service = TodoService()
 
 
 
-async def create_task(request:Request):
+# from starlette.requests import Request
+# from starlette.responses import JSONResponse
+
+async def create_task(request: Request):
     try:
         content = await request.json()
         todo = CreateTodo(**content)
-        async for session in get_session():
+
+        # async for session in get_session():
+        async with get_session() as session:
+            # Create the Todo in DB
             new_todo = await todo_service.create_todo(todo, session)
 
+        # Convert to JSON-serializable dict
+        todo_dict = new_todo.model_dump()
+        todo_dict["created_at"] = new_todo.created_at.isoformat()
+        todo_dict["uid"] = str(new_todo.uid)
 
-        return JSONResponse(new_todo,status_code = 201)
-
+        return JSONResponse(todo_dict, status_code=201)
 
     except Exception as e:
         return JSONResponse({"detail": str(e)}, status_code=400)
+
+
     # except Exception as e:
+    #     return JSONResponse({"detail": str(e)}, status_code=400)
+    # # except Exception as e:
     #     print(e)
+
+
+
+async def all_todo(request:Request):
+
+    try:
+        async with get_session() as session:
+            content = await todo_service.get_todos(session)
+            # console.log(content)
+            print(str(content),"Hello am content")
+
+            return JSONResponse(content)
+
+    except Exception as e:
+        print(e)
+        # return e
+        print(traceback.format_exc())
+        return JSONResponse({"detail": str(e)}, status_code=400)
+
+
+
+
+
 
 
 
