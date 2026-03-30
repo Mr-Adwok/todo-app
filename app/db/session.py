@@ -1,13 +1,14 @@
-from sqlmodel import SQLModel
-from app.settings import config
-from sqlalchemy.orm import sessionmaker
+from sqlmodel import SQLModel   # import sqlModel for metadata purpose
+from app.settings import config  # loading the class that is handling .env
+from sqlalchemy.orm import sessionmaker # session-maker for making a session
 from sqlalchemy.ext.asyncio import AsyncEngine,create_async_engine
-from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlmodel.ext.asyncio.session import AsyncSession #
+from contextlib import asynccontextmanager
 
 
 
 
-
+#  an engine is crucial to connect to a database so you need it that's the first thing to consider
 async_engine = create_async_engine(url = config.DATABASE_URL, echo=True)
 
 async def init_db():
@@ -20,10 +21,6 @@ async def init_db():
         print(config.DATABASE_URL)
         # print(SQLModel.metadata.tables)
 
-# async def init_db():
-#     async with async_engine.begin() as conn:  # 🔥 use begin()
-#         print("Database connected")
-#         await conn.run_sync(SQLModel.metadata.create_all)
 
 SessionLocal = sessionmaker(
     bind=async_engine,
@@ -32,8 +29,17 @@ SessionLocal = sessionmaker(
 )
 
 
-async def get_session() -> AsyncSession:
+
+
+@asynccontextmanager
+async def get_session():
     async with SessionLocal() as session:
         yield session
+
+
+
+# async def get_session() -> AsyncSession:
+#     async with SessionLocal() as session:
+#         yield session
 
 print(config.DATABASE_URL)
