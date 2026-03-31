@@ -1,4 +1,6 @@
 from app.models.todo import Todo
+from uuid import UUID
+
 
 from sqlmodel import select,desc
 from app.schemas.schema import CreateTodo
@@ -40,7 +42,24 @@ class TodoService():
         "completed": todo.completed,
         "created_at": todo.created_at.isoformat()
     }
-    for todo in results  # ✅ use 'results', not 'todos'
+    for todo in results
 ]
+
+
+    # get one todo
+
+    async def get_todo_by_uuid(self,uuid:UUID,session:AsyncSession):
+        # query
+        # statement = select(Todo).where(uuid == Todo.uuid)
+        statement = select(Todo).where(Todo.uid == uuid)
+        get_todo = await session.exec(statement)
+        result = get_todo.first()
+        # print(result,"______--------------------------------------------------------------")
+        return result
+
+
+
+
+
 
 
