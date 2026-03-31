@@ -60,6 +60,22 @@ async def all_todo(request:Request):
 
 
 
+async def get_one_todo(request:Request):
+    try:
+        async with get_session() as session:
+            uuid = request.path_params['uuid']
+            content = await todo_service.get_todo_by_uuid(uuid,session)
+            content_dict = content.dict()
+            content_dict["created_at"] = content.created_at.isoformat()
+            content_dict["uid"] = str(content.uid)
+            print("UUID RAW:", request.path_params['uuid'])
+            print(type(content))
+            return JSONResponse(content_dict)
+
+    except Exception as e:
+            return JSONResponse({"detail": str(e)}, status_code=400)
+            # print(e)
+            # return e
 
 
 
