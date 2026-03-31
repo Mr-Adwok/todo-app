@@ -1,6 +1,6 @@
 from app.db.session import init_db
 from starlette.routing import Route
-from app.routes.todos import create_task,all_todo
+from app.routes.todos import create_task,all_todo,get_one_todo
 from contextlib import asynccontextmanager
 from starlette.applications import Starlette
 from starlette.responses import PlainTextResponse
@@ -30,7 +30,8 @@ async def homepage(request):
 route = [
     Route('/',homepage),
     Route('/Todo',create_task, methods=["POST"]),
-    Route('/all',all_todo,methods = ["GET"] )
+    Route('/all',all_todo,methods = ["GET"] ),
+    Route('/get_one_todo1/{uuid:uuid}',get_one_todo,methods = ["GET"])
 ]
 
 app = Starlette(
