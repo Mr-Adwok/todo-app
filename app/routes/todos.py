@@ -73,9 +73,40 @@ async def get_one_todo(request:Request):
             return JSONResponse(content_dict)
 
     except Exception as e:
-            return JSONResponse({"detail": str(e)}, status_code=400)
+            return JSONResponse({"detail": str(e)}, status_code=404)
             # print(e)
             # return e
+
+async def delete_todo(request:Request):
+    try:
+        async with get_session() as session:
+            uuid = request.path_params['uuid']
+            content = await todo_service.delete_todo_service(uuid,session)
+            # content_dict = content.dict()
+
+            return JSONResponse({"message":"Deleted"},status_code = 200)
+
+    except Exception as e:
+        return JSONResponse({"detail": str(e)}, status_code=404)
+
+
+async def update_todo(request:Request):
+
+    async with get_session() as session :
+        uuid = request.path_params['uuid']
+        title = await request.json()
+        content = await todo_service.update_todo_service(uuid,title,session)
+        print(content)
+        content_dict = content.dict()
+        content_dict["created_at"] = content.created_at.isoformat()
+        content_dict["uid"] = str(content.uid)
+
+        return JSONResponse({"successful update: ":content_dict})
+
+
+
+
+
 
 
 
