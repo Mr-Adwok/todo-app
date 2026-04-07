@@ -54,8 +54,48 @@ class TodoService():
         statement = select(Todo).where(Todo.uid == uuid)
         get_todo = await session.exec(statement)
         result = get_todo.first()
+        # title = result.title
+        # print(title,"Hellllllllllllllooooooo am title yesssssssss my brother")
         # print(result,"______--------------------------------------------------------------")
         return result
+
+
+    async def delete_todo_service(self,uuid:UUID,session:AsyncSession):
+        # getting a todo
+        statement = await self.get_todo_by_uuid(uuid,session)
+
+        print(statement,"hellloo _______________ yep")
+        # delete a statement
+        # result = await session.delete(statement)
+        if statement:
+            await session.delete(statement)
+            await session.commit()
+
+        # return a result
+        # print(result,"hellllo ------------------------------------------------")
+        # return result
+
+        # statement = select(Todo).where(Todo.uid == uuid)
+        # get_todo = await session.exec(statement)
+        # result = get_todo.first()
+        # if result:
+        #     await session.delete(result)
+
+
+    async def update_todo_service(self,uuid:UUID,new_title_param,session:AsyncSession):
+        statement = await self.get_todo_by_uuid(uuid,session)
+        # title = statement.title
+        # new_title_param = title
+        statement.title = new_title_param["title"]
+        new_ = statement.title
+
+        print("new_title_param: ", "God is Love ____________________________",new_)
+        # await session.add(statement)
+        await session.commit()
+
+        return statement
+
+
 
 
 
